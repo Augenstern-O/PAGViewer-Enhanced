@@ -25,7 +25,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif ()
 
 if (MSVC)
-    add_compile_options("/utf-8" /GR /bigobj)
+    add_compile_options("/utf-8" /GR /bigobj /Zc:__cplusplus)
     # Add debug symbols for Release build to enable PDB generation
     if (CMAKE_BUILD_TYPE STREQUAL "Release")
         add_compile_options(/Zi)
@@ -170,10 +170,16 @@ add_custom_target(pag
 list(APPEND PAG_VIEWER_PLATFORM_LIBS ${PAG_OUTPUT_LIB})
 list(APPEND PAG_DEPEND_TARGETS pag)
 
-execute_process(COMMAND bash -c "${CMAKE_CURRENT_SOURCE_DIR}/sync_deps.sh")
+if (NOT WIN32)
+    execute_process(COMMAND bash -c "${CMAKE_CURRENT_SOURCE_DIR}/sync_deps.sh")
+endif()
 if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tools/RttrAutoRegister${CMAKE_EXECUTABLE_SUFFIX}")
     set(RTTR_OUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src/editing/rttr/PAGRttr.hpp")
-    execute_process(COMMAND bash -c "chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/tools/RttrAutoRegister${CMAKE_EXECUTABLE_SUFFIX} && ${CMAKE_CURRENT_SOURCE_DIR}/tools/RttrAutoRegister${CMAKE_EXECUTABLE_SUFFIX} -s ${CMAKE_CURRENT_SOURCE_DIR}/../include/pag -o ${RTTR_OUT_PATH} -m PAG_API -i ${CMAKE_CURRENT_SOURCE_DIR}/../include ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES}")
+    if (WIN32)
+        execute_process(COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/tools/RttrAutoRegister${CMAKE_EXECUTABLE_SUFFIX}" -s "${CMAKE_CURRENT_SOURCE_DIR}/../include/pag" -o "${RTTR_OUT_PATH}" -m PAG_API -i "${CMAKE_CURRENT_SOURCE_DIR}/../include" ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
+    else()
+        execute_process(COMMAND bash -c "chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/tools/RttrAutoRegister${CMAKE_EXECUTABLE_SUFFIX} && ${CMAKE_CURRENT_SOURCE_DIR}/tools/RttrAutoRegister${CMAKE_EXECUTABLE_SUFFIX} -s ${CMAKE_CURRENT_SOURCE_DIR}/../include/pag -o ${RTTR_OUT_PATH} -m PAG_API -i ${CMAKE_CURRENT_SOURCE_DIR}/../include ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES}")
+    endif()
 endif()
 
 # collects pag include directories.

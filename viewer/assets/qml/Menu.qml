@@ -48,12 +48,13 @@ Item {
                         root.command("open-preferences");
                     }
                 }
-                Action {
-                    text: qsTr("Check for Updates")
-                    onTriggered: {
-                        root.command("check-for-updates");
-                    }
-                }
+                // 更新功能已禁用 - 隐藏"检查更新"菜单项
+                // Action {
+                //     text: qsTr("Check for Updates")
+                //     onTriggered: {
+                //         root.command("check-for-updates");
+                //     }
+                // }
                 Action {
                     text: qsTr("Performance Test")
                     enabled: root.hasPAGFile
@@ -91,6 +92,34 @@ Item {
                         shortcut: "Ctrl+P"
                         onTriggered: {
                             root.command('export-frame-as-png');
+                        }
+                    }
+                }
+                PAGMenu {
+                    menuWidth: windowsMenuBar.menuWidth
+                    title: qsTr("Batch Export")
+                    Action {
+                        text: qsTr("Batch Export as PNG Sequence Frames")
+                        onTriggered: {
+                            root.command('batch-export-as-png-sequence');
+                        }
+                    }
+                    Action {
+                        text: qsTr("Batch Export as APNG")
+                        onTriggered: {
+                            root.command('batch-export-as-apng');
+                        }
+                    }
+                    Action {
+                        text: qsTr("Batch Export Folder as PNG Sequence Frames")
+                        onTriggered: {
+                            root.command('batch-export-folder-as-png-sequence');
+                        }
+                    }
+                    Action {
+                        text: qsTr("Batch Export Folder as APNG")
+                        onTriggered: {
+                            root.command('batch-export-folder-as-apng');
                         }
                     }
                 }
@@ -220,14 +249,15 @@ Item {
                         root.command("open-commerce-page");
                     }
                 }
-                Platform.MenuItem {
-                    visible: windowActive
-                    text: qsTr("Check for Updates")
-                    role: "ApplicationSpecificRole"
-                    onTriggered: {
-                        root.command("check-for-updates");
-                    }
-                }
+                // 更新功能已禁用 - 隐藏"检查更新"菜单项
+                // Platform.MenuItem {
+                //     visible: windowActive
+                //     text: qsTr("Check for Updates")
+                //     role: "ApplicationSpecificRole"
+                //     onTriggered: {
+                //         root.command("check-for-updates");
+                //     }
+                // }
                 Platform.MenuItem {
                     visible: windowActive
                     text: qsTr("Install Plugin")
@@ -314,6 +344,21 @@ Item {
                         shortcut: "Meta+P"
                         onTriggered: {
                             root.command('export-frame-as-png');
+                        }
+                    }
+                }
+                Platform.Menu {
+                    title: qsTr("Batch Export")
+                    Platform.MenuItem {
+                        text: qsTr("Batch Export as PNG Sequence Frames")
+                        onTriggered: {
+                            root.command('batch-export-as-png-sequence');
+                        }
+                    }
+                    Platform.MenuItem {
+                        text: qsTr("Batch Export as APNG")
+                        onTriggered: {
+                            root.command('batch-export-as-apng');
                         }
                     }
                 }

@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QVariantMap>
+#include "task/export/PAGBatchExportTask.h"
 #include "task/export/PAGExportAPNGTask.h"
 #include "task/export/PAGExportPNGTask.h"
 #include "task/profiling/PAGBenchmarkTask.h"
@@ -29,7 +30,11 @@ namespace pag {
 
 PAGTask* PAGTaskFactory::createTask(PAGTaskType taskType, const QString& outPath,
                                     const QVariantMap& extraParams) {
-  if (pagFile == nullptr) {
+  // Batch export tasks don't need pagFile to be loaded
+  bool isBatchExport = (taskType == PAGTaskType::PAGTaskType_BatchExportPNG ||
+                        taskType == PAGTaskType::PAGTaskType_BatchExportAPNG);
+  
+  if (pagFile == nullptr && !isBatchExport) {
     return nullptr;
   }
 
@@ -58,6 +63,46 @@ PAGTask* PAGTaskFactory::createTask(PAGTaskType taskType, const QString& outPath
     }
     case PAGTaskType::PAGTaskType_Benchmark: {
       task = new PAGBenchmarkTask(pagFile, path);
+      break;
+    }
+    case PAGTaskType::PAGTaskType_BatchExportPNG: {
+      if (extraParams.contains("pagFiles")) {
+        QVariant filesVariant = extraParams.value("pagFiles");
+        QStringList pagFiles;
+        
+        // Handle both QStringList and QVariantList (from QML JavaScript array)
+        if (filesVariant.canConvert<QStringList>()) {
+          pagFiles = filesVariant.toStringList();
+        } else if (filesVariant.canConvert<QVariantList>()) {
+          QVariantList filesList = filesVariant.toList();
+          for (const QVariant& file : filesList) {
+            pagFiles.append(file.toString());
+          }
+        }
+        
+        qDebug() << "Creating BatchExportPNG task with" << pagFiles.size() << "files";
+        task = new PAGBatchExportTask(pagFiles, path, BatchExportType::PNG_SEQUENCE);
+      }
+      break;
+    }
+    case PAGTaskType::PAGTaskType_BatchExportAPNG: {
+      if (extraParams.contains("pagFiles")) {
+        QVariant filesVariant = extraParams.value("pagFiles");
+        QStringList pagFiles;
+        
+        // Handle both QStringList and QVariantList (from QML JavaScript array)
+        if (filesVariant.canConvert<QStringList>()) {
+          pagFiles = filesVariant.toStringList();
+        } else if (filesVariant.canConvert<QVariantList>()) {
+          QVariantList filesList = filesVariant.toList();
+          for (const QVariant& file : filesList) {
+            pagFiles.append(file.toString());
+          }
+        }
+        
+        qDebug() << "Creating BatchExportAPNG task with" << pagFiles.size() << "files";
+        task = new PAGBatchExportTask(pagFiles, path, BatchExportType::APNG);
+      }
       break;
     }
     default: {

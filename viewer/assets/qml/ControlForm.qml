@@ -7,7 +7,8 @@ Item {
     required property var pagView
     property bool hasPAGFile: (pagView && pagView.filePath !== "")
 
-    property bool updateAvailable: false
+    // 更新功能已禁用 - 注释掉更新相关属性
+    // property bool updateAvailable: false
 
     property bool lastPlayStatusIsPlaying: false
 
@@ -17,7 +18,8 @@ Item {
 
     property alias progressSlider: progressSlider
 
-    property alias updateButton: updateButton
+    // 更新功能已禁用 - 注释掉更新按钮别名
+    // property alias updateButton: updateButton
 
     property alias panelsButton: panelsButton
 
@@ -221,41 +223,42 @@ Item {
             id: rightControls
             spacing: 2
 
-            CheckBox {
-                id: updateButton
-                width: 44
-                height: 44
-                enabled: updateAvailable
-                visible: updateAvailable
-                focusPolicy: Qt.NoFocus
-                opacity: mouseArea.pressed ? 0.5 : 1.0
-                indicator: Image {
-                    width: 44
-                    height: 44
-                    source: "qrc:/images/update-red.png"
-                }
+            // 更新功能已禁用 - 隐藏更新按钮
+            // CheckBox {
+            //     id: updateButton
+            //     width: 44
+            //     height: 44
+            //     enabled: updateAvailable
+            //     visible: updateAvailable
+            //     focusPolicy: Qt.NoFocus
+            //     opacity: mouseArea.pressed ? 0.5 : 1.0
+            //     indicator: Image {
+            //         width: 44
+            //         height: 44
+            //         source: "qrc:/images/update-red.png"
+            //     }
 
-                MouseArea {
-                    id: mouseArea
-                    property bool entered: false
-                    hoverEnabled: true
-                    anchors.fill: parent
-                    onClicked: {
-                        updateButton.click();
-                    }
-                    onEntered: {
-                        entered = true;
-                    }
-                    onExited: {
-                        entered = false;
-                    }
+            //     MouseArea {
+            //         id: mouseArea
+            //         property bool entered: false
+            //         hoverEnabled: true
+            //         anchors.fill: parent
+            //         onClicked: {
+            //             updateButton.click();
+            //         }
+            //         onEntered: {
+            //             entered = true;
+            //         }
+            //         onExited: {
+            //             entered = false;
+            //         }
 
-                    ToolTip {
-                        visible: parent.entered
-                        text: qsTr("Discover a new version, click to update")
-                    }
-                }
-            }
+            //         ToolTip {
+            //             visible: parent.entered
+            //             text: qsTr("Discover a new version, click to update")
+            //         }
+            //     }
+            // }
             CheckBox {
                 id: backgroundButton
                 width: 44

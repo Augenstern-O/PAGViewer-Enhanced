@@ -121,11 +121,12 @@ PAGWindow {
                     }
                 }
             }
-            updateButton {
-                onClicked: {
-                    checkForUpdates(false);
-                }
-            }
+            // 更新功能已禁用 - 注释掉更新按钮的引用
+            // updateButton {
+            //     onClicked: {
+            //         checkForUpdates(false);
+            //     }
+            // }
             backgroundButton {
                 checked: mainForm.isBackgroundOn
                 onClicked: {
@@ -165,7 +166,8 @@ PAGWindow {
         width: 500
         height: 160 + windowTitleBarHeight
         title: qsTr("Settings")
-        autoCheckForUpdates: settings.isAutoCheckUpdate
+        // 更新功能已禁用 - 注释掉自动检查更新设置的绑定
+        // autoCheckForUpdates: settings.isAutoCheckUpdate
         useBeta: settings.isUseBeta
         useEnglish: settings.isUseEnglish
         onUseEnglishChanged: {
@@ -174,12 +176,13 @@ PAGWindow {
             }
             settings.isUseEnglish = settingsWindow.useEnglish;
         }
-        onAutoCheckForUpdatesChanged: {
-            if (!settingsWindow.visible || settingsWindow.autoCheckForUpdates === settings.isAutoCheckUpdate) {
-                return;
-            }
-            settings.isAutoCheckUpdate = settingsWindow.autoCheckForUpdates;
-        }
+        // 更新功能已禁用 - 注释掉自动检查更新设置的处理
+        // onAutoCheckForUpdatesChanged: {
+        //     if (!settingsWindow.visible || settingsWindow.autoCheckForUpdates === settings.isAutoCheckUpdate) {
+        //         return;
+        //     }
+        //     settings.isAutoCheckUpdate = settingsWindow.autoCheckForUpdates;
+        // }
         onUseBetaChanged: {
             if (!settingsWindow.visible || settingsWindow.useBeta === settings.isUseBeta) {
                 return;
@@ -192,9 +195,9 @@ PAGWindow {
         id: aboutWindow
         visible: false
         width: settings.isUseEnglish ? 600 : 500
-        height: 160 + windowTitleBarHeight
+        height: 180 + windowTitleBarHeight
         title: qsTr("About PAGViewer")
-        aboutMessage: "<b>PAGViewer</b> " + Qt.application.version + "<br><br>Copyright © 2017-present Tencent. All rights reserved."
+        aboutMessage: "<b>PAGViewer</b> " + Qt.application.version + "<br><br>Based on libpag open source project<br>Modified by Augenstern<br><br>Original Copyright © 2017-present Tencent. All rights reserved."
     }
 
     PAGTaskFactory {
@@ -218,6 +221,18 @@ PAGWindow {
         nameFilters: []
     }
 
+    FileDialog {
+        id: batchOpenFileDialog
+
+        property var currentAcceptHandler: null
+        property string exportType: ""
+
+        visible: false
+        title: qsTr("Select PAG Files")
+        fileMode: FileDialog.OpenFiles
+        nameFilters: ["PAG files(*.pag)"]
+    }
+
     Platform.FolderDialog {
         id: openFolderDialog
 
@@ -227,25 +242,36 @@ PAGWindow {
         title: qsTr("Select Save Path")
     }
 
-    Timer {
-        id: startupTimer
-        repeat: false
-        interval: 1000
-        onTriggered: {
-            if (settings.isAutoCheckUpdate) {
-                checkForUpdates(true);
-            }
-        }
+    Platform.FolderDialog {
+        id: batchOutputFolderDialog
+
+        property var currentAcceptHandler: null
+
+        visible: false
+        title: qsTr("Select Output Directory")
     }
 
-    Timer {
-        id: updateTimer
-        repeat: true
-        interval: 1000 * 60 * 60 * 24
-        onTriggered: {
-            checkForUpdates(true);
-        }
-    }
+    // 更新功能已禁用 - 注释掉启动检查定时器
+    // Timer {
+    //     id: startupTimer
+    //     repeat: false
+    //     interval: 1000
+    //     onTriggered: {
+    //         if (settings.isAutoCheckUpdate) {
+    //             checkForUpdates(true);
+    //         }
+    //     }
+    // }
+
+    // 更新功能已禁用 - 注释掉定期检查定时器
+    // Timer {
+    //     id: updateTimer
+    //     repeat: true
+    //     interval: 1000 * 60 * 60 * 24
+    //     onTriggered: {
+    //         checkForUpdates(true);
+    //     }
+    // }
 
     PAGWindow {
         id: progressWindow
@@ -392,8 +418,9 @@ PAGWindow {
         });
         menuBar.command.connect(onCommand);
 
-        startupTimer.start();
-        updateTimer.start();
+        // 更新功能已禁用 - 注释掉定时器启动
+        // startupTimer.start();
+        // updateTimer.start();
     }
 
     function updateProgress() {
@@ -464,13 +491,15 @@ PAGWindow {
         mainForm.pagView.y = (windowHeight - finalHeight) / 2;
     }
 
-    function updateAvailable(hasNewVersion) {
-        mainForm.controlForm.updateAvailable = hasNewVersion;
-    }
+    // 更新功能已禁用 - 注释掉更新可用函数
+    // function updateAvailable(hasNewVersion) {
+    //     mainForm.controlForm.updateAvailable = hasNewVersion;
+    // }
 
-    function checkForUpdates(keepSilent) {
-        checkUpdateModel.checkForUpdates(keepSilent, settings.isUseBeta);
-    }
+    // 更新功能已禁用 - 注释掉检查更新函数
+    // function checkForUpdates(keepSilent) {
+    //     checkUpdateModel.checkForUpdates(keepSilent, settings.isUseBeta);
+    // }
 
     function onCommand(command) {
         console.log(`Get command: [${command}]`);
@@ -624,9 +653,10 @@ PAGWindow {
             openFileDialog.accepted.connect(openFileDialog.currentAcceptHandler);
             openFileDialog.open();
             break;
-        case "check-for-updates":
-            checkForUpdates(false);
-            break;
+        // 更新功能已禁用 - 注释掉检查更新命令处理
+        // case "check-for-updates":
+        //     checkForUpdates(false);
+        //     break;
         case "performance-profile":
             let task = taskFactory.createTask(PAGTaskFactory.PAGTaskType_Profiling, mainForm.pagView.filePath);
             if (task) {
@@ -644,6 +674,190 @@ PAGWindow {
             benchmarkBusyIndicator.visible = true;
             benchmarkBusyIndicator.running = true;
             benchmarkModel.startBenchmarkOnTemplate(false);
+            break;
+        case "batch-export-as-png-sequence":
+            if (batchOpenFileDialog.currentAcceptHandler) {
+                batchOpenFileDialog.accepted.disconnect(batchOpenFileDialog.currentAcceptHandler);
+            }
+            batchOpenFileDialog.exportType = "png-sequence";
+            batchOpenFileDialog.currentFolder = StandardPaths.writableLocation(StandardPaths.DocumentsLocation);
+            batchOpenFileDialog.currentAcceptHandler = function () {
+                let selectedFiles = batchOpenFileDialog.selectedFiles;
+                console.log("Selected files count:", selectedFiles.length);
+                console.log("Selected files:", selectedFiles);
+                
+                if (selectedFiles.length === 0) {
+                    console.log("No files selected!");
+                    return;
+                }
+                // Open folder dialog to select output directory
+                if (openFolderDialog.currentAcceptHandler) {
+                    openFolderDialog.accepted.disconnect(openFolderDialog.currentAcceptHandler);
+                }
+                openFolderDialog.title = qsTr("Select Output Directory");
+                openFolderDialog.currentFolder = Utils.getFileDir(selectedFiles[0]);
+                openFolderDialog.currentAcceptHandler = function () {
+                    let outputDir = openFolderDialog.folder;
+                    console.log("Output directory:", outputDir);
+                    console.log("Creating task with files:", selectedFiles);
+                    let task = taskFactory.createTask(PAGTaskFactory.PAGTaskType_BatchExportPNG, outputDir, {
+                        "pagFiles": selectedFiles
+                    });
+                    console.log("Task created:", task !== null);
+                    if (task) {
+                        taskConnections.target = task;
+                        progressWindow.title = qsTr("Batch Exporting");
+                        progressWindow.progressBar.value = 0;
+                        progressWindow.task = task;
+                        progressWindow.visible = true;
+                        progressWindow.raise();
+                        console.log("Starting task...");
+                        task.start();
+                    } else {
+                        console.log("ERROR: Failed to create task!");
+                    }
+                };
+                openFolderDialog.accepted.connect(openFolderDialog.currentAcceptHandler);
+                openFolderDialog.open();
+            };
+            batchOpenFileDialog.accepted.connect(batchOpenFileDialog.currentAcceptHandler);
+            batchOpenFileDialog.open();
+            break;
+        case "batch-export-as-apng":
+            if (batchOpenFileDialog.currentAcceptHandler) {
+                batchOpenFileDialog.accepted.disconnect(batchOpenFileDialog.currentAcceptHandler);
+            }
+            batchOpenFileDialog.exportType = "apng";
+            batchOpenFileDialog.currentFolder = StandardPaths.writableLocation(StandardPaths.DocumentsLocation);
+            batchOpenFileDialog.currentAcceptHandler = function () {
+                let selectedFiles = batchOpenFileDialog.selectedFiles;
+                console.log("Selected files count:", selectedFiles.length);
+                console.log("Selected files:", selectedFiles);
+                
+                if (selectedFiles.length === 0) {
+                    console.log("No files selected!");
+                    return;
+                }
+                // Open folder dialog to select output directory
+                if (openFolderDialog.currentAcceptHandler) {
+                    openFolderDialog.accepted.disconnect(openFolderDialog.currentAcceptHandler);
+                }
+                openFolderDialog.title = qsTr("Select Output Directory");
+                openFolderDialog.currentFolder = Utils.getFileDir(selectedFiles[0]);
+                openFolderDialog.currentAcceptHandler = function () {
+                    let outputDir = openFolderDialog.folder;
+                    console.log("Output directory:", outputDir);
+                    console.log("Creating task with files:", selectedFiles);
+                    let task = taskFactory.createTask(PAGTaskFactory.PAGTaskType_BatchExportAPNG, outputDir, {
+                        "pagFiles": selectedFiles
+                    });
+                    console.log("Task created:", task !== null);
+                    if (task) {
+                        taskConnections.target = task;
+                        progressWindow.title = qsTr("Batch Exporting");
+                        progressWindow.progressBar.value = 0;
+                        progressWindow.task = task;
+                        progressWindow.visible = true;
+                        progressWindow.raise();
+                        console.log("Starting task...");
+                        task.start();
+                    } else {
+                        console.log("ERROR: Failed to create task!");
+                    }
+                };
+                openFolderDialog.accepted.connect(openFolderDialog.currentAcceptHandler);
+                openFolderDialog.open();
+            };
+            batchOpenFileDialog.accepted.connect(batchOpenFileDialog.currentAcceptHandler);
+            batchOpenFileDialog.open();
+            break;
+        case "batch-export-folder-as-png-sequence":
+            // Open folder dialog to select input folder
+            if (openFolderDialog.currentAcceptHandler) {
+                openFolderDialog.accepted.disconnect(openFolderDialog.currentAcceptHandler);
+            }
+            openFolderDialog.title = qsTr("Select Input Folder");
+            openFolderDialog.currentFolder = StandardPaths.writableLocation(StandardPaths.DocumentsLocation);
+            openFolderDialog.currentAcceptHandler = function () {
+                let inputFolder = openFolderDialog.folder;
+                console.log("Input folder:", inputFolder);
+                
+                // Open another folder dialog to select output directory
+                if (batchOutputFolderDialog.currentAcceptHandler) {
+                    batchOutputFolderDialog.accepted.disconnect(batchOutputFolderDialog.currentAcceptHandler);
+                }
+                batchOutputFolderDialog.title = qsTr("Select Output Directory");
+                batchOutputFolderDialog.currentFolder = inputFolder;
+                batchOutputFolderDialog.currentAcceptHandler = function () {
+                    let outputDir = batchOutputFolderDialog.folder;
+                    console.log("Output directory:", outputDir);
+                    console.log("Creating task with folder:", inputFolder);
+                    let task = taskFactory.createTask(PAGTaskFactory.PAGTaskType_BatchExportPNG, outputDir, {
+                        "pagFiles": [inputFolder]
+                    });
+                    console.log("Task created:", task !== null);
+                    if (task) {
+                        taskConnections.target = task;
+                        progressWindow.title = qsTr("Batch Exporting");
+                        progressWindow.progressBar.value = 0;
+                        progressWindow.task = task;
+                        progressWindow.visible = true;
+                        progressWindow.raise();
+                        console.log("Starting task...");
+                        task.start();
+                    } else {
+                        console.log("ERROR: Failed to create task!");
+                    }
+                };
+                batchOutputFolderDialog.accepted.connect(batchOutputFolderDialog.currentAcceptHandler);
+                batchOutputFolderDialog.open();
+            };
+            openFolderDialog.accepted.connect(openFolderDialog.currentAcceptHandler);
+            openFolderDialog.open();
+            break;
+        case "batch-export-folder-as-apng":
+            // Open folder dialog to select input folder
+            if (openFolderDialog.currentAcceptHandler) {
+                openFolderDialog.accepted.disconnect(openFolderDialog.currentAcceptHandler);
+            }
+            openFolderDialog.title = qsTr("Select Input Folder");
+            openFolderDialog.currentFolder = StandardPaths.writableLocation(StandardPaths.DocumentsLocation);
+            openFolderDialog.currentAcceptHandler = function () {
+                let inputFolder = openFolderDialog.folder;
+                console.log("Input folder:", inputFolder);
+                
+                // Open another folder dialog to select output directory
+                if (batchOutputFolderDialog.currentAcceptHandler) {
+                    batchOutputFolderDialog.accepted.disconnect(batchOutputFolderDialog.currentAcceptHandler);
+                }
+                batchOutputFolderDialog.title = qsTr("Select Output Directory");
+                batchOutputFolderDialog.currentFolder = inputFolder;
+                batchOutputFolderDialog.currentAcceptHandler = function () {
+                    let outputDir = batchOutputFolderDialog.folder;
+                    console.log("Output directory:", outputDir);
+                    console.log("Creating task with folder:", inputFolder);
+                    let task = taskFactory.createTask(PAGTaskFactory.PAGTaskType_BatchExportAPNG, outputDir, {
+                        "pagFiles": [inputFolder]
+                    });
+                    console.log("Task created:", task !== null);
+                    if (task) {
+                        taskConnections.target = task;
+                        progressWindow.title = qsTr("Batch Exporting");
+                        progressWindow.progressBar.value = 0;
+                        progressWindow.task = task;
+                        progressWindow.visible = true;
+                        progressWindow.raise();
+                        console.log("Starting task...");
+                        task.start();
+                    } else {
+                        console.log("ERROR: Failed to create task!");
+                    }
+                };
+                batchOutputFolderDialog.accepted.connect(batchOutputFolderDialog.currentAcceptHandler);
+                batchOutputFolderDialog.open();
+            };
+            openFolderDialog.accepted.connect(openFolderDialog.currentAcceptHandler);
+            openFolderDialog.open();
             break;
         default:
             console.log(`Undefined command: [${command}]`);

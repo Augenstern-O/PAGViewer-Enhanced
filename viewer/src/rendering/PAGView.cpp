@@ -40,13 +40,14 @@ static void reportPAGFIleInfo(const std::shared_ptr<PAGFile>& pagFile, size_t le
 
 PAGView::PAGView(QQuickItem* parent) : QQuickItem(parent) {
   setFlag(ItemHasContents, true);
-  drawable = GPUDrawable::MakeFrom(this);
+  // Delay drawable creation until the item is added to a window
+  // drawable = GPUDrawable::MakeFrom(this);
   pagPlayer = std::make_unique<PAGPlayer>();
-  auto pagSurface = PAGSurface::MakeFrom(drawable);
-  pagPlayer->setSurface(pagSurface);
+  // auto pagSurface = PAGSurface::MakeFrom(drawable);
+  // pagPlayer->setSurface(pagSurface);
   renderThread = std::make_unique<PAGRenderThread>(this);
   renderThread->moveToThread(renderThread.get());
-  drawable->moveToThread(renderThread.get());
+  // drawable->moveToThread(renderThread.get());
   audioPlayer = std::make_unique<PAGAudioPlayer>();
   resizeTimer = std::make_unique<QTimer>();
   connect(resizeTimer.get(), &QTimer::timeout, this, &PAGView::sizeChangedDelayHandle);
@@ -303,6 +304,20 @@ void PAGView::previousFrame() {
 }
 
 QSGNode* PAGView::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData*) {
+  // Initialize drawable on first paint (when window is available)
+  if (!drawable) {
+    drawable = GPUDrawable::MakeFrom(this);
+    if (drawable) {
+      drawable->moveToThread(renderThread.get());
+      auto pagSurface = PAGSurface::MakeFrom(drawable);
+      pagPlayer->setSurface(pagSurface);
+    }
+  }
+
+  if (!drawable) {
+    return oldNode;
+  }
+
   if (!renderThread->isRunning()) {
     renderThread->start();
   }

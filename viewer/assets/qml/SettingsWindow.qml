@@ -65,47 +65,48 @@ PAGWindow {
 
                 Item {
                     width: 1
-                    height: (parent.height - settingsWindow.contentHeight * 3) / 2
+                    height: (parent.height - settingsWindow.contentHeight * 2) / 2  // 改为2个选项
                 }
 
-                CheckBox {
-                    id: autoCheckForUpdatesCheckBox
-                    checked: settingsWindow.autoCheckForUpdates
-                    width: parent.width
-                    height: settingsWindow.contentHeight
-                    text: qsTr("Check For Updates Automatically")
-                    scale: 0.6
-                    font.pixelSize: 22
-                    padding: 0
-                    spacing: 0
-                    anchors.left: parent.left
-                    anchors.leftMargin: -80
-                    focusPolicy: Qt.ClickFocus
-                    display: AbstractButton.TextBesideIcon
-                    indicator: Image {
-                        height: 32
-                        anchors.left: parent.left
-                        source: parent.checked ? "qrc:/images/checked.png" : "qrc:/images/unchecked.png"
-                    }
-                    contentItem: Text {
-                        text: parent.text
-                        anchors.left: parent.indicator.right
-                        anchors.leftMargin: 8
-                        font: parent.font
-                        color: "#FFFFFF"
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    onCheckedChanged: {
-                        if (settingsWindow.autoCheckForUpdates === autoCheckForUpdatesCheckBox.checked) {
-                            return;
-                        }
-                        settingsWindow.autoCheckForUpdates = autoCheckForUpdatesCheckBox.checked;
-                    }
+                // 更新功能已禁用 - 隐藏"自动检查更新"选项
+                // CheckBox {
+                //     id: autoCheckForUpdatesCheckBox
+                //     checked: settingsWindow.autoCheckForUpdates
+                //     width: parent.width
+                //     height: settingsWindow.contentHeight
+                //     text: qsTr("Check For Updates Automatically")
+                //     scale: 0.6
+                //     font.pixelSize: 22
+                //     padding: 0
+                //     spacing: 0
+                //     anchors.left: parent.left
+                //     anchors.leftMargin: -80
+                //     focusPolicy: Qt.ClickFocus
+                //     display: AbstractButton.TextBesideIcon
+                //     indicator: Image {
+                //         height: 32
+                //         anchors.left: parent.left
+                //         source: parent.checked ? "qrc:/images/checked.png" : "qrc:/images/unchecked.png"
+                //     }
+                //     contentItem: Text {
+                //         text: parent.text
+                //         anchors.left: parent.indicator.right
+                //         anchors.leftMargin: 8
+                //         font: parent.font
+                //         color: "#FFFFFF"
+                //         verticalAlignment: Text.AlignVCenter
+                //     }
+                //     onCheckedChanged: {
+                //         if (settingsWindow.autoCheckForUpdates === autoCheckForUpdatesCheckBox.checked) {
+                //             return;
+                //         }
+                //         settingsWindow.autoCheckForUpdates = autoCheckForUpdatesCheckBox.checked;
+                //     }
 
-                    Rectangle {
-                        color: "#FFFFFF"
-                    }
-                }
+                //     Rectangle {
+                //         color: "#FFFFFF"
+                //     }
+                // }
 
                 CheckBox {
                     id: useBetaCheckBox
@@ -186,7 +187,7 @@ PAGWindow {
 
             Item {
                 width: 1
-                height: (parent.height - settingsWindow.contentHeight * 3) / 2
+                height: (parent.height - settingsWindow.contentHeight * 2) / 2  // 改为2个选项
             }
         }
     }

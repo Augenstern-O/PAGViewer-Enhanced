@@ -41,8 +41,9 @@ void PAGExportAPNGTask::onFrameFlush(double progress) {
 }
 
 int PAGExportAPNGTask::onFinish() {
-  std::string outPath = apngFilePath.toStdString();
-  std::string firstPNGPath = QString("%1/1.png").arg(filePath).toStdString();
+  // Use toLocal8Bit() for Windows compatibility with non-ASCII paths
+  std::string outPath = std::string(apngFilePath.toLocal8Bit());
+  std::string firstPNGPath = std::string(QString("%1/1.png").arg(filePath).toLocal8Bit());
   int frameRate = static_cast<int>(pagFile->frameRate());
   Utils::ExportAPNGFromPNGSequence(outPath, firstPNGPath, frameRate);
   PAGExportPNGTask::onFrameFlush(1.0);
